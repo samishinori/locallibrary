@@ -302,14 +302,14 @@ class AuthorCreateViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse('author_create'))
-        self.assertEqual(response.status_code, 403) #here http 302,not 403
+        self.assertEqual(response.status_code, 403) #here http 302,not 403 not login required , but permission required.here caused error is not raise_exception , i suppose.
         self.assertTrue(response.url.startswith('/accounts/login/'))
         
     def test_redirect_if_logged_in_but_not_correct_permission(self):
         login = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
         response = self.client.get(reverse('author_create'))
         self.assertEqual(response.status_code, 403) #but here is 403 not 302 . why? not login ->302,@permission_required,not permitted->302(login page),PermissionRequiredMixin,not permitted ->403.
-
+        #offcial documents said that whether redirected to login page or get 403 is defined by settings->raise_exception parameter. @decorator login/permission required are defined to redirect to login page.
     def test_logged_in_with_permission(self):
         login = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
         response = self.client.get(reverse('author_create'))
